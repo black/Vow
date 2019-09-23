@@ -63,12 +63,7 @@ public class GameView extends View {
         }
     }
 
-    // Draw Car
-   /*private void drawCar(Canvas canvas, int pos) {
-        int carBound = 25;
-        car.setBounds(getWidth() / 2 + pos - carBound, getHeight() / 2 - carBound, getWidth() / 2 + pos + carBound, getHeight() / 2 + carBound);
-        car.draw(canvas);
-    }*/
+    // Draw Car 
     private void drawCar(Canvas canvas, int pos) {
         int carBound = 40;
         canvas.save();
