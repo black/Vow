@@ -2,12 +2,16 @@ package com.example.vow;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Canvas;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.vow.DataModel.GameEvents;
@@ -20,8 +24,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(new GameView(this));
+
+     /*   gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
 
         Button button = findViewById(R.id.scoregen);
         button.setOnClickListener(new View.OnClickListener() {
@@ -64,5 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 coinView.setText("SCORE:"+val.toString());
             }
         });
+*/
+      /*  RelativeLayout gameCanvas = findViewById(R.id.gameCanvas);
+        GameView gameView = new GameView(this);
+        gameCanvas.addView(gameView);*/
     }
 }
