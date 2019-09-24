@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/musicselector"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+    <RadioButton
+        android:id="@+id/radioButtonA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord A" />
+    <RadioButton
+        android:id="@+id/radioButtonB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord B" />
+    <RadioButton
+        android:id="@+id/radioButtonC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord C" />
+    <RadioButton
+        android:id="@+id/radioButtonD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord D" />
+    <RadioButton
+        android:id="@+id/radioButtonE"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord E" />
+    <RadioButton
+        android:id="@+id/radioButtonF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord F" />
+    <RadioButton
+        android:id="@+id/radioButtonG"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/customfont"
+        android:background="@drawable/customradiobutton"
+        android:padding="16dp"
+        android:text="Chord G" />
+</RadioGroup>

@@ -1,25 +1,59 @@
 package com.example.vow;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 import android.view.View;
 
+import com.example.vow.DataModel.GameEvents;
+
+import java.util.Random;
+
 public class GameView extends View {
-    private int speed = 5;
-    private int[] posVerticle = new int[10];
-    private Drawable road, car, background;
-    private int bollspeed = 30;
+    private int speed = 2;
+    private int[] posVerticle = new int[9];
+    private Drawable road, car, background, tree, grass, cactus;
+    private int bollspeed;
     private int degrees;
+    private Random random = new Random();
+    private int roadBoundV = 300;
+    private int roadBoundH = 400;
+    private int carBound = 100;
+    private int[] treeX;
+    private boolean[] visibility;
+
+    GameEvents gameEvents;
 
     public GameView(Context context) {
         super(context);
+        gameEvents = ViewModelProviders.of((FragmentActivity) context).get(GameEvents.class);
         for (int i = 0; i < posVerticle.length; i++) {
-            posVerticle[i] = i * 100;
+            posVerticle[i] = i * roadBoundV;
         }
-        car = context.getResources().getDrawable(R.drawable.car_straight, null);
-        road = context.getResources().getDrawable(R.drawable.ic_road, null);
-        background = context.getResources().getDrawable(R.drawable.ic_junglebg, null);
+        car = ResourcesCompat.getDrawable(getResources(),R.drawable.car_straight, null);
+        road = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_road, null);
+        background = ResourcesCompat.getDrawable(getResources(),R.drawable.bgplain, null);
+        tree = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_trees, null);
+        grass = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_grass, null);
+        cactus = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_cactus, null);
+
+        treeX = new int[posVerticle.length];
+        visibility = new boolean[posVerticle.length];
+        gameEvents.getMove().observe((LifecycleOwner) getContext(), new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer value) {
+                bollspeed = value;
+            }
+        });
     }
 
     @Override
@@ -49,30 +83,55 @@ public class GameView extends View {
 
     // Draw Vegetation
     private void drawVegetation(Canvas canvas) {
-
+        for (int i = 0; i < posVerticle.length; i++) {
+            if (posVerticle[i] < getHeight()) posVerticle[i] += speed;
+            else {
+                posVerticle[i] = -roadBoundV + speed;
+                visibility[i] = random.nextBoolean();
+                int numLeft = randomNumGen(0, getWidth() / 2);
+                int numRight = randomNumGen(getWidth() / 2 + carBound/2, getWidth());
+                Log.d("Number RL",numLeft +","+numRight);
+                treeX[i] = (visibility[i] ? numLeft : numRight );
+            }
+            if (!visibility[i]) {
+                tree.setBounds(treeX[i], posVerticle[i], treeX[i] + 50, posVerticle[i] + 50);
+                tree.draw(canvas);
+            } else {
+                cactus.setBounds(treeX[i], posVerticle[i], treeX[i] + 40, posVerticle[i] + 40);
+                cactus.draw(canvas);
+                int dist = randomNumGen(50,-50);
+                grass.setBounds(treeX[i] + dist, posVerticle[i], treeX[i] + dist + 40, posVerticle[i] + 40);
+                grass.draw(canvas);
+            }
+        }
     }
 
     // Draw Road
     private void drawRoad(Canvas canvas) {
-        for (int i = 0; i < 9; i++) {
-            int roadX = getWidth() / 2 - 75;
+        for (int i = 0; i < posVerticle.length; i++) {
+            int roadX = getWidth() / 2 - roadBoundH / 2;
             if (posVerticle[i] < getHeight()) posVerticle[i] += speed;
-            else posVerticle[i] = -100 + speed;
-            road.setBounds(roadX, posVerticle[i], roadX + 150, posVerticle[i] + 100);
+            else posVerticle[i] = -roadBoundV + speed;
+            road.setBounds(roadX, posVerticle[i], roadX + roadBoundH, posVerticle[i] + roadBoundV);
             road.draw(canvas);
         }
     }
 
-    // Draw Car 
+    // Draw Car
     private void drawCar(Canvas canvas, int pos) {
-        int carBound = 40;
         canvas.save();
-        canvas.translate(getWidth()/2,getHeight() / 2);
+        canvas.translate(getWidth() / 2, getHeight() / 2);
         canvas.translate(pos-carBound/2, 0);
-        car.setBounds(0,0,carBound,carBound);
-        canvas.rotate((float) Math.cos(Math.toRadians(degrees))*bollspeed);
+        car.setBounds(0, 0, carBound, carBound);
+        canvas.rotate((float) Math.cos(Math.toRadians(degrees)) * bollspeed / 2);
         car.draw(canvas);
         canvas.restore();
+    }
+
+    private int randomNumGen(int min, int max) {
+        int num = (int) (Math.random() * (max - min) + min);
+        Log.d("Number", num + "");
+        return num;
     }
 
 }

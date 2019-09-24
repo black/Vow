@@ -1,79 +1,46 @@
 package com.example.vow;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Canvas;
-import android.support.annotation.Nullable;
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.example.vow.DataModel.GameEvents;
 
 public class MainActivity extends AppCompatActivity {
 
-    GameEvents gameEvents;
-    private int score = 0,coin=0;
-    private double pitch = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(new GameView(this));
+        setContentView(R.layout.activity_main);
+        //Permission Check
+        int PERMISSIONS_ALL = 1;
+        String[] permissions = {
+                Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO
+        };
+        if (!hasPermissions(this, permissions)) {
+            ActivityCompat.requestPermissions(this,permissions, PERMISSIONS_ALL);
+        }
+    }
 
-     /*   gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
+    public void startGame(View view) {
+        startActivity(new Intent(MainActivity.this,GameActivity.class));
+        finish();
+    }
 
-        Button button = findViewById(R.id.scoregen);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pitch =  Math.random()*100;
-                if((int)pitch>50)score++;
-                if((int)pitch>40 && (int)pitch<60) coin++;
-                gameEvents.setPitch(pitch);
-                gameEvents.setScore(score);
-                gameEvents.setCoins(coin);
+    public static boolean hasPermissions(Context context, String... permissions){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && context!=null && permissions!=null){
+            for (String permission:permissions){
+                if (ActivityCompat.checkSelfPermission(context,permission)!= PackageManager.PERMISSION_GRANTED){
+                    return false;
+                }
             }
-        });
-
-
-        final TextView pitchView = findViewById(R.id.pitch);
-        final TextView scoreView = findViewById(R.id.score);
-        final TextView coinView = findViewById(R.id.coin);
-
-        gameEvents.getPitch().observe(this, new Observer<Double>() {
-            @Override
-            public void onChanged(@Nullable Double val) {
-                assert val != null;
-                pitchView.setText("PITCH:"+val.toString());
-            }
-        });
-
-        gameEvents.getScore().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(@Nullable Integer val) {
-                assert val != null;
-                scoreView.setText("SCORE:"+val.toString());
-            }
-        });
-
-        gameEvents.getCoins().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(@Nullable Integer val) {
-                assert val != null;
-                coinView.setText("SCORE:"+val.toString());
-            }
-        });
-*/
-      /*  RelativeLayout gameCanvas = findViewById(R.id.gameCanvas);
-        GameView gameView = new GameView(this);
-        gameCanvas.addView(gameView);*/
+        }
+        return true;
     }
 }

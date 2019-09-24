@@ -9,11 +9,13 @@ public class GameEvents extends ViewModel {
     private MutableLiveData<Integer> score;
     private MutableLiveData<Integer> coins;
     private MutableLiveData<Double> pitch;
+    private MutableLiveData<Integer> move;
 
     public GameEvents(){
         score = new MutableLiveData<>();
         coins = new MutableLiveData<>();
         pitch = new MutableLiveData<>();
+        move = new MutableLiveData<>();
     }
 
     // game score
@@ -38,5 +40,13 @@ public class GameEvents extends ViewModel {
     }
     public LiveData<Integer> getCoins(){
         return coins;
+    }
+
+    //move
+    public void setMove(int move){
+        this.move.setValue(move);
+    }
+    public LiveData<Integer> getMove(){
+        return move;
     }
 }
