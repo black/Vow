@@ -209,12 +209,13 @@ public class GameActivity extends AppCompatActivity {
     private void saveGame(){
         sharedPreferences = getSharedPreferences("VOWGAME",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putInt("data_0 ",level);
-        editor.putInt("data_1 ",score);
-        editor.putInt("data_2 ",coin);
+        editor.putInt("data_0",level);
+        editor.putInt("data_1",score);
+        editor.putInt("data_2",coin);
         boolean status = editor.commit();
         if(status) {
             Log.d(TAG, "saved L:" + level + " \t C: " + coin + " \t S:" + score);
+            editor.apply();
         }else {
             Log.d(TAG,"Failed");
         }
