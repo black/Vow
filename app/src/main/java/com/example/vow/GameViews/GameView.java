@@ -1,4 +1,4 @@
-package com.example.vow;
+package com.example.vow.GameViews;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
@@ -6,15 +6,14 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.example.vow.DataModel.GameEvents;
+import com.example.vow.R;
 
 import java.util.Random;
 
@@ -39,7 +38,7 @@ public class GameView extends View {
         for (int i = 0; i < posVerticle.length; i++) {
             posVerticle[i] = i * roadBoundV;
         }
-        car = ResourcesCompat.getDrawable(getResources(),R.drawable.car_straight, null);
+        car = ResourcesCompat.getDrawable(getResources(), R.drawable.car_straight, null);
         road = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_road, null);
         background = ResourcesCompat.getDrawable(getResources(),R.drawable.bgplain, null);
         tree = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_trees, null);

@@ -13,6 +13,7 @@
         android:layout_height="match_parent" >
     </RelativeLayout>
     <TextView
+        android:layout_toRightOf="@id/homescreen"
         android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,6 +22,15 @@
         android:textColor="#fff"
         android:fontFamily="@font/customfont"
         android:text="Score"/>
+    <ImageView
+        android:id="@+id/homescreen"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:tint="#fff"
+        android:onClick="goHome"
+        android:src="@drawable/ic_home_black_24dp"/>
     <TextView
         android:layout_alignParentRight="true"
         android:id="@+id/coin"

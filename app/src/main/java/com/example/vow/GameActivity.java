@@ -3,26 +3,22 @@ package com.example.vow;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.os.Build;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.vow.DataModel.GameEvents;
+import com.example.vow.GameViews.GameView;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
@@ -34,18 +30,22 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 
 public class GameActivity extends AppCompatActivity {
 
-    GameEvents gameEvents;
-    private int score = 0,coin=0;
+    private String TAG  = "GameEvents";
+
+    private GameEvents gameEvents;
+    private int score = 0,coin=0,level=0;
     private double pitch = 0;
     private String chrod="Chord A";
     private RadioGroup radioGroup;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game);
-
 
         final RelativeLayout gameCanvas = findViewById(R.id.gameCanvas);
         gameCanvas.post(new Runnable() {
@@ -55,6 +55,7 @@ public class GameActivity extends AppCompatActivity {
                 gameCanvas.addView(gameView);
             }
         });
+
         gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
         mic();
         radioGroup = findViewById(R.id.musicselector);
@@ -72,7 +73,6 @@ public class GameActivity extends AppCompatActivity {
                 assert val != null;
                 if(val<3)score++;
                 scoreView.setText("SCORE "+score);
-                Log.d("score",val+"");
                 if(score%50==0)gameEvents.setCoins(coin++);
             }
         });
@@ -194,4 +194,29 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void goHome(View view) {
+        saveGame();
+        startActivity(new Intent(GameActivity.this, MainActivity.class));
+        finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveGame();
+    }
+
+    private void saveGame(){
+        sharedPreferences = getSharedPreferences("VOWGAME",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt("data_0 ",level);
+        editor.putInt("data_1 ",score);
+        editor.putInt("data_2 ",coin);
+        boolean status = editor.commit();
+        if(status) {
+            Log.d(TAG, "saved L:" + level + " \t C: " + coin + " \t S:" + score);
+        }else {
+            Log.d(TAG,"Failed");
+        }
+    }
 }
