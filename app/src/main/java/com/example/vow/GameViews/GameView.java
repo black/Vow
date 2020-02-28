@@ -26,7 +26,7 @@ public class GameView extends View {
     private Random random = new Random();
     private int roadBoundV = 300;
     private int roadBoundH = 400;
-    private int carBound = 100;
+    private int carBound = 200;
     private int[] treeX;
     private boolean[] visibility;
     private int coins = 0,coinX=0;
@@ -39,7 +39,7 @@ public class GameView extends View {
         for (int i = 0; i < posVerticle.length; i++) {
             posVerticle[i] = i * roadBoundV;
         }
-        car = ResourcesCompat.getDrawable(getResources(), R.drawable.car_straight, null);
+        car = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_car, null);
         road = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_road, null);
         background = ResourcesCompat.getDrawable(getResources(),R.drawable.bgplain, null);
         tree = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_trees, null);
@@ -54,13 +54,14 @@ public class GameView extends View {
                 bollspeed = value;
             }
         });
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         /* Drawing Vector Drawable on Canvas*/
-
+        roadBoundH = 2*canvas.getWidth()/3;
         /*--draw backgroud---*/
         drawBackGround(canvas);
         /*--draw road---*/
@@ -94,7 +95,7 @@ public class GameView extends View {
                 Log.d("Number RL",numLeft +","+numRight);
                 treeX[i] = (visibility[i] ? numLeft : numRight );
             }
-            if (!visibility[i]) {
+            /*if (!visibility[i]) {
                 tree.setBounds(treeX[i], posVerticle[i], treeX[i] + 50, posVerticle[i] + 50);
                 tree.draw(canvas);
             } else {
@@ -103,7 +104,7 @@ public class GameView extends View {
                 int dist = randomNumGen(50,-50);
                 grass.setBounds(treeX[i] + dist, posVerticle[i], treeX[i] + dist + 40, posVerticle[i] + 40);
                 grass.draw(canvas);
-            }
+            }*/
         }
     }
 
@@ -122,9 +123,9 @@ public class GameView extends View {
     private void drawCar(Canvas canvas, int pos) {
         canvas.save();
         canvas.translate(getWidth() / 2, getHeight() / 2);
-        canvas.translate(pos-carBound/2, 0);
-        car.setBounds(0, 0, carBound, carBound);
-        canvas.rotate((float) Math.cos(Math.toRadians(degrees)) * bollspeed / 2);
+        canvas.translate(8*pos-carBound/2, carBound);
+        car.setBounds(0, 0, carBound, carBound*2);
+        canvas.rotate((float) Math.cos(Math.toRadians(degrees)) * bollspeed );
         car.draw(canvas);
         canvas.restore();
     }
