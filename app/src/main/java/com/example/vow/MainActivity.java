@@ -44,11 +44,9 @@ public class MainActivity extends AppCompatActivity {
         TextView coinView = findViewById(R.id.coins);
 
         SharedPreferences sharedPreferences = getSharedPreferences("VOWGAME", MODE_PRIVATE);
-        mLevel = sharedPreferences.getInt("data_0", 0);
-        mScore = sharedPreferences.getInt("data_1", 0);
-        mCoins = sharedPreferences.getInt("data_2", 0);
-
-        Log.d(TAG,"retrieve L:" +mLevel +" \t C: "+mCoins+" \t S:"+mScore);
+        mLevel = sharedPreferences.getInt("currentLevel", 0);
+        mScore = sharedPreferences.getInt("totalScore", 0);
+        mCoins = sharedPreferences.getInt("totalCoin", 0);
 
         GameEvents gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
         gameEvents.setCoins(mCoins);

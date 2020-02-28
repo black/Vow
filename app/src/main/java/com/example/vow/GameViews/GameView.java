@@ -29,6 +29,7 @@ public class GameView extends View {
     private int carBound = 100;
     private int[] treeX;
     private boolean[] visibility;
+    private int coins = 0,coinX=0;
 
     GameEvents gameEvents;
 
@@ -69,6 +70,7 @@ public class GameView extends View {
         /*--draw car---*/
 
         int carX = (int) (bollspeed * Math.sin(Math.toRadians(degrees)));//rand.nextInt(75) * (rand .nextBoolean() ? -1 : 1);
+        if(Math.abs(carX-coinX)<2)gameEvents.setCoins(coins+1); // add coins
         drawCar(canvas, carX);
         degrees += speed;
         invalidate();
@@ -131,6 +133,15 @@ public class GameView extends View {
         int num = (int) (Math.random() * (max - min) + min);
         Log.d("Number", num + "");
         return num;
+    }
+
+    /*
+     *  Display coins on the road
+     *  Display them on random interval
+     *  Make the collectible only when the card hit them with 0 degree
+     */
+    private void generateCoins(){
+
     }
 
 }

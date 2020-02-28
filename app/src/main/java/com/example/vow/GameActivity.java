@@ -33,12 +33,14 @@ public class GameActivity extends AppCompatActivity {
     private String TAG  = "GameEvents";
 
     private GameEvents gameEvents;
-    private int score = 0,coin=0,level=0;
+    private int score = 0,coins=0,level=0;
     private double pitch = 0;
     private String chrod="Chord A";
     private RadioGroup radioGroup;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private int goalScore = 50;
+    private int currentScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,15 @@ public class GameActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game);
+
+        /*Shred Preferences*/
+        sharedPreferences = getSharedPreferences("VOWGAME",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.apply();
+
+        /*Get Previous Session Values*/
+        score = sharedPreferences.getInt("totalScore",0);
+        goalScore = sharedPreferences.getInt("currentGoalScore",0)+50;
 
         final RelativeLayout gameCanvas = findViewById(R.id.gameCanvas);
         gameCanvas.post(new Runnable() {
@@ -56,7 +67,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
         mic();
         radioGroup = findViewById(R.id.musicselector);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -67,13 +77,12 @@ public class GameActivity extends AppCompatActivity {
         });
 
         final TextView scoreView = findViewById(R.id.score);
+        gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
         gameEvents.getMove().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer val) {
                 assert val != null;
-                if(val<3)score++;
-                scoreView.setText("SCORE "+score);
-                if(score%50==0)gameEvents.setCoins(coin++);
+                if(val<3)gameEvents.setScore(currentScore++);
             }
         });
 
@@ -82,7 +91,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Integer val) {
                 assert val != null;
-                coinView.setText("COINS "+score);
+                coinView.setText("COINS "+coins);
             }
         });
 
@@ -92,6 +101,16 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Double pitch) {
                 pitchView.setText("PITCH "+pitch);
+            }
+        });
+
+        gameEvents.getScore().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer val) {
+                if(goalScore < val){
+                    gameEvents.setLevels(level+1);
+                }
+                scoreView.setText("SCORE "+ val);
             }
         });
     }
@@ -207,14 +226,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void saveGame(){
-        sharedPreferences = getSharedPreferences("VOWGAME",MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putInt("data_0",level);
-        editor.putInt("data_1",score);
-        editor.putInt("data_2",coin);
+        editor.putInt("currentLevel",level);
+        editor.putInt("currentGoalScore",goalScore);
+        editor.putInt("totalScore",score+currentScore);
+        editor.putInt("totalCoin",coins);
         boolean status = editor.commit();
         if(status) {
-            Log.d(TAG, "saved L:" + level + " \t C: " + coin + " \t S:" + score);
             editor.apply();
         }else {
             Log.d(TAG,"Failed");
