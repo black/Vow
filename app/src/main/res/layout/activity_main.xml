@@ -9,83 +9,46 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/customfont"
-            android:textColor="#FFF"
-            android:text="SCORE"/>
-        <TextView
-            android:id="@+id/scores"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:fontFamily="@font/customfont"
-            android:textColor="#FFF"
-            android:text="00"/>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_alignParentRight="true"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/customfont"
-            android:textColor="#FFF"
-            android:text="COINS"/>
-        <TextView
-            android:id="@+id/coins"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:fontFamily="@font/customfont"
-            android:textColor="#FFF"
-            android:text="00"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_above="@+id/startGame"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingBottom="64dp"
-        android:gravity="center">
-        <TextView
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#FFF"
-            android:textStyle="bold"
-            android:fontFamily="@font/customfont"
-            android:text="LEVEL"/>
-        <TextView
-            android:id="@+id/level"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:fontFamily="@font/customfont"
+                android:text="LEVEL"/>
+            <TextView
+                android:id="@+id/level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF"
+                android:fontFamily="@font/customfont"
+                android:textSize="24sp"
+                android:text="00"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/showGameProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFF"
-            android:fontFamily="@font/customfont"
-            android:textSize="24sp"
-            android:text="00"/>
+            android:elevation="5dp"
+            android:onClick="showGameProgress"
+            android:text="Progress"/>
+        <Button
+            android:id="@+id/startGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="5dp"
+            android:onClick="startGame"
+            android:text="START" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/startGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/ic_start"
-        android:elevation="5dp"
-        android:onClick="startGame" />
 
 </RelativeLayout>

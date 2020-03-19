@@ -39,23 +39,23 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_ALL);
         }
 
-        TextView scoreView = findViewById(R.id.scores);
+       // TextView scoreView = findViewById(R.id.scores);
         TextView levelView = findViewById(R.id.level);
-        TextView coinView = findViewById(R.id.coins);
+       // TextView coinView = findViewById(R.id.coins);
 
         SharedPreferences sharedPreferences = getSharedPreferences("VOWGAME", MODE_PRIVATE);
         mLevel = sharedPreferences.getInt("currentLevel", 0);
-        mScore = sharedPreferences.getInt("totalScore", 0);
-        mCoins = sharedPreferences.getInt("totalCoin", 0);
+     //   mScore = sharedPreferences.getInt("totalScore", 0);
+      //  mCoins = sharedPreferences.getInt("totalCoin", 0);
 
         GameEvents gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
-        gameEvents.setCoins(mCoins);
-        gameEvents.setScore(mScore);
+     //   gameEvents.setCoins(mCoins);
+      //  gameEvents.setScore(mScore);
         gameEvents.setLevels(mLevel);
 
-        coinView.setText(String.valueOf(mCoins));
+//        coinView.setText(String.valueOf(mCoins));
         levelView.setText(String.valueOf(mLevel));
-        scoreView.setText(String.valueOf(mScore));
+//        scoreView.setText(String.valueOf(mScore));
     }
 
     public void startGame(View view) {
@@ -72,5 +72,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    public void showGameProgress(View view) {
+        startActivity(new Intent(MainActivity.this, ProgressActivity.class));
+        finish();
     }
 }
