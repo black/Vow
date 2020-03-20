@@ -8,54 +8,65 @@
     android:padding="32dp"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_centerInParent="true">
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_height="400dp"
+        android:background="@drawable/ic_menu_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="#FFF"
-                android:textStyle="bold"
-                android:fontFamily="@font/customfont"
-                android:text="LEVEL"/>
+            android:layout_centerInParent="true"
+            android:padding="16dp"
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/level"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFF"
-                android:fontFamily="@font/customfont"
+                android:background="@drawable/button_bg"
+                android:gravity="center"
+                android:layout_margin="8dp"
                 android:textSize="24sp"
-                android:text="00"/>
-        </LinearLayout>
-        <Button
-            android:id="@+id/quitGame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="5dp"
-            android:onClick="quitGame"
-            android:text="QUIT"/>
-        <Button
-            android:id="@+id/showGameProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="5dp"
-            android:onClick="showGameProgress"
-            android:text="Progress"/>
-        <Button
+                android:textColor="#fff"
+                android:text="LEVEL 00"/>
+            <Button
+                android:layout_below="@+id/level"
+                android:id="@+id/showGameProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_bg"
+                android:onClick="showGameProgress"
+                android:layout_margin="8dp"
+                android:textSize="24sp"
+                android:textColor="#fff"
+                android:text="Progress"/>
+            <Button
+                android:layout_below="@id/showGameProgress"
+                android:id="@+id/quitGame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_bg"
+                android:layout_margin="8dp"
+                android:textSize="24sp"
+                android:textColor="#fff"
+                android:onClick="quitGame"
+                android:text="QUIT"/>
+        </LinearLayout>        <Button
             android:id="@+id/startGame"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ic_ribbon"
+            android:layout_marginTop="-32dp"
+            android:textSize="24sp"
+            android:paddingBottom="16dp"
+            android:paddingTop="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#fff"
             android:onClick="startGame"
             android:text="START" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -30,33 +30,32 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 
 public class GameActivity extends AppCompatActivity {
 
-    private String TAG  = "GameEvents";
+    private String TAG = "GameEvents";
 
     private GameEvents gameEvents;
-    private int score = 0,coins=0,level=0;
+    private int score = 0, coins = 0, level = 0;
     private double pitch = 0;
-    private String chrod="Chord A";
+    private String chrod = "Chord A";
     private RadioGroup radioGroup;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private int goalScore = 50;
+    private int goalScore = 10;
     private int currentScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game);
 
         /*Shred Preferences*/
-        sharedPreferences = getSharedPreferences("VOWGAME",MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("VOWGAME", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.apply();
 
         /*Get Previous Session Values*/
-        score = sharedPreferences.getInt("totalScore",0);
-        goalScore = sharedPreferences.getInt("currentGoalScore",0)+50;
+        gameInit();
 
         final RelativeLayout gameCanvas = findViewById(R.id.gameCanvas);
         gameCanvas.post(new Runnable() {
@@ -72,17 +71,38 @@ public class GameActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checked) {
                 RadioButton radioButton = findViewById(checked);
-                chrod = (String)radioButton.getText();
+                chrod = (String) radioButton.getText();
+                saveGame();
+                setVisibility(radioGroup);
             }
         });
 
-        final TextView scoreView = findViewById(R.id.score);
         gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
         gameEvents.getMove().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer val) {
                 assert val != null;
-                if(val<3)gameEvents.setScore(currentScore++);
+                if (val < 3) gameEvents.setScore(currentScore++);
+            }
+        });
+
+        final TextView pitchView = findViewById(R.id.pitch);
+        gameEvents.getPitch().observe(this, new Observer<Double>() {
+            @Override
+            public void onChanged(@Nullable Double pitch) {
+                pitchView.setText("PITCH " + pitch);
+            }
+        });
+
+        final TextView scoreView = findViewById(R.id.score);
+        gameEvents.getScore().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer val) {
+                if (goalScore < val) {
+                    gameEvents.setLevels(level + 1);
+                }
+                scoreView.setText("SCORE " + val);
+                saveGame();
             }
         });
 
@@ -91,32 +111,17 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Integer val) {
                 assert val != null;
-                coinView.setText("COINS "+coins);
-            }
-        });
-
-
-        final TextView pitchView = findViewById(R.id.pitch);
-        gameEvents.getPitch().observe(this, new Observer<Double>() {
-            @Override
-            public void onChanged(@Nullable Double pitch) {
-                pitchView.setText("PITCH "+pitch);
-            }
-        });
-
-        gameEvents.getScore().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(@Nullable Integer val) {
-                if(goalScore < val){
-                    gameEvents.setLevels(level+1);
+                if (val > 0) {
+                    coins++;
                 }
-                scoreView.setText("SCORE "+ val);
+                coinView.setText("COINS " + coins +"/"+goalScore);
+                saveGame();
             }
         });
     }
 
     public void mic() {
-        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
         PitchDetectionHandler pdh = new PitchDetectionHandler() {
             @Override
             public void handlePitch(PitchDetectionResult res, AudioEvent e) {
@@ -137,53 +142,53 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void processPitch(float pitchInHz) {
-        switch (chrod){
+        switch (chrod) {
             case "Chord A":
                 if (pitchInHz >= 110 && pitchInHz < 123.47) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
             case "Chord B":
                 if (pitchInHz >= 123.47 && pitchInHz < 130.81) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
             case "Chord C":
                 if (pitchInHz >= 130.81 && pitchInHz < 146.83) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
             case "Chord D":
                 if (pitchInHz >= 146.83 && pitchInHz < 164.81) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
             case "Chord E":
                 if (pitchInHz >= 164.81 && pitchInHz <= 174.61) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
             case "Chord F":
                 if (pitchInHz >= 174.61 && pitchInHz < 185) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
             case "Chord G":
                 if (pitchInHz >= 185 && pitchInHz < 196) {
                     gameEvents.setMove(0);
-                }else{
+                } else {
                     gameEvents.setMove(300);
                 }
                 break;
@@ -221,16 +226,19 @@ public class GameActivity extends AppCompatActivity {
         saveGame();
     }
 
+    private void gameInit() {
+        chrod = sharedPreferences.getString("currentChord","Chord A");
+        level = sharedPreferences.getInt("currentLevel",0);
+        currentScore = sharedPreferences.getInt("totalScore",0);
+        coins = sharedPreferences.getInt("totalCoin",0);
+        goalScore = 20*level;
+    }
+
     private void saveGame(){
+        editor.putString("currentChord",chrod);
         editor.putInt("currentLevel",level);
-        editor.putInt("currentGoalScore",goalScore);
         editor.putInt("totalScore",score+currentScore);
         editor.putInt("totalCoin",coins);
-        boolean status = editor.commit();
-        if(status) {
-            editor.apply();
-        }else {
-            Log.d(TAG,"Failed");
-        }
+        editor.apply();
     }
 }
