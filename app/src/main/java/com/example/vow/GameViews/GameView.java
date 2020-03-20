@@ -20,46 +20,44 @@ import com.example.vow.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class GameView extends View {
+    private boolean initialized = true;
+    private boolean coining = false;
     private int speed = 10;
-    private int[] posVerticle = new int[9];
-    private Drawable road, car, coin, background, tree, grass, cactus;
-    private int bollspeed = 500;
-    private int degrees;
-    private Random random = new Random();
-    private int roadBoundV = 300;
-    private int roadBoundH = 400;
+    private int ang = 0;
+    private Drawable road, car, coin, background;
+    private int bollspeed = 200;
+    private int roadBoundV = 400;
+    private int roadBoundH = 600;
     private int carBound = 200;
-    private int[] treeX;
-    private boolean[] visibility;
-    private int coinst = 0, coinX = 0;
-    private List<Coins> coins = new ArrayList<>();
+    private List<PositionHolder> coins = new ArrayList<>();
+    private List<PositionHolder> roads = new ArrayList<>();
 
     GameEvents gameEvents;
-    private int carX,carY;
+    private int carX, carY;
 
     public GameView(Context context) {
         super(context);
         gameEvents = ViewModelProviders.of((FragmentActivity) context).get(GameEvents.class);
-        for (int i = 0; i < posVerticle.length; i++) {
-            posVerticle[i] = i * roadBoundV;
-        }
         car = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_car, null);
         coin = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_coin, null);
         road = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_road, null);
         background = ResourcesCompat.getDrawable(getResources(), R.drawable.bgplain, null);
-        tree = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_trees, null);
-        grass = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_grass, null);
-        cactus = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_cactus, null);
 
-        treeX = new int[posVerticle.length];
-        visibility = new boolean[posVerticle.length];
+
         gameEvents.getMove().observe((LifecycleOwner) getContext(), new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer value) {
-                bollspeed = value;
+                assert value != null;
+                Log.d("VOICEDATA",value+"");
+                if(value==0){
+                    if(ang<90)ang+=4;
+                    else ang =90;
+                }else{
+                    if(ang>0)ang-=4;
+                    else ang=0;
+                }
             }
         });
 
@@ -68,34 +66,38 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if(initialized){
+            initialized = false;
+            initGame();
+        }
+
         /*--draw backgroud---*/
         drawBackGround(canvas);
 
         /*--draw road---*/
-        drawRoad(canvas);
-
-
-        /*--draw roadside vegetation---*/
-       // drawVegetation(canvas);
+        displayRoad(canvas);
 
         /*--draw car---*/
-       // int carX = (int) (bollspeed * Math.sin(Math.toRadians(degrees)));//rand.nextInt(75) * (rand .nextBoolean() ? -1 : 1);
-        //if(Math.abs(carX-coinX)<2)gameEvents.setCoins(coin+1); // add coins
-       // drawCar(canvas, carX);
-        degrees += speed;
+        carX = (int)(bollspeed*Math.cos(Math.toRadians(ang))) + getWidth() / 2;
+        carY = getHeight() / 2;
+        drawCar(canvas, carX, carY);
 
         /*-- add coins----*/
         addCoins();
-        /*--drwa coins---*/
-        int displacement = (int) (bollspeed * Math.sin(Math.toRadians(degrees)));
-        carX = displacement +getWidth()/2;//rand.nextInt(75) * (rand .nextBoolean() ? -1 : 1);
-        carY = getHeight()/2;
 
+        /*-- draw coins---*/
         displayCoins(canvas);
-        drawRect(canvas,carX,carY,100,200);
 
         invalidate();
     }
+
+    private void initGame(){
+        for (int i = 0; i < 10; i++) {
+            roads.add(new PositionHolder(getWidth()/2,-roadBoundV+i*roadBoundV));
+        }
+        coins.add(new PositionHolder(getWidth() / 2, 0));
+    }
+
 
     // Draw Background
     private void drawBackGround(Canvas canvas) {
@@ -103,42 +105,19 @@ public class GameView extends View {
         background.draw(canvas);
     }
 
-    // Draw Vegetation
-    private void drawVegetation(Canvas canvas) {
-        for (int i = 0; i < posVerticle.length; i++) {
-            if (posVerticle[i] < getHeight()) posVerticle[i] += speed;
-            else {
-                posVerticle[i] = -roadBoundV + speed;
-                visibility[i] = random.nextBoolean();
-                int numLeft = randomNumGen(0, getWidth() / 2);
-                int numRight = randomNumGen(getWidth() / 2 + carBound / 2, getWidth());
-                Log.d("Number RL", numLeft + "," + numRight);
-                treeX[i] = (visibility[i] ? numLeft : numRight);
-            }
-            /*if (!visibility[i]) {
-                tree.setBounds(treeX[i], posVerticle[i], treeX[i] + 50, posVerticle[i] + 50);
-                tree.draw(canvas);
-            } else {
-                cactus.setBounds(treeX[i], posVerticle[i], treeX[i] + 40, posVerticle[i] + 40);
-                cactus.draw(canvas);
-                int dist = randomNumGen(50,-50);
-                grass.setBounds(treeX[i] + dist, posVerticle[i], treeX[i] + dist + 40, posVerticle[i] + 40);
-                grass.draw(canvas);
-            }*/
-        }
-    }
-
     // Draw Road
-    private void drawRoad(Canvas canvas) {
-        for (int i = 0; i < posVerticle.length; i++) {
-            int roadX = getWidth() / 2 - roadBoundH / 2;
-            if (posVerticle[i] < getHeight()) posVerticle[i] += speed;
-            else posVerticle[i] = -roadBoundV + speed;
-            road.setBounds(roadX, posVerticle[i], roadX + roadBoundH, posVerticle[i] + roadBoundV);
+    private void displayRoad(Canvas canvas) {
+        for (int i = 0; i < roads.size(); i++) {
+            PositionHolder street = roads.get(i);
+            if (street.y < getHeight()+roadBoundV) street.y += speed;
+            else {
+                roads.remove(i);
+                roads.add(new PositionHolder(getWidth()/2,-roadBoundV));
+            }
+            road.setBounds(street.x - roadBoundH / 2, street.y - roadBoundV / 2, street.x + roadBoundH / 2, street.y + roadBoundV / 2);
             road.draw(canvas);
         }
     }
-
 
     private int randomNumGen(int min, int max) {
         int num = (int) (Math.random() * (max - min) + min);
@@ -148,41 +127,39 @@ public class GameView extends View {
 
 
     // Draw Car
-    private void drawCar(Canvas canvas, int pos) {
-        canvas.save();
-        canvas.translate(getWidth() / 2, getHeight() / 2);
-        canvas.translate(8 * pos - carBound / 2, carBound);
-        car.setBounds(0, 0, carBound, carBound * 2);
-        canvas.rotate((float) Math.cos(Math.toRadians(degrees)) * bollspeed);
+    private void drawCar(Canvas canvas, int x, int y) {
+        car.setBounds(x - carBound / 2, y - carBound, x + carBound / 2, y + carBound);
         car.draw(canvas);
-        canvas.restore();
+    }
+
+    // add Coins
+    private int N = 3;
+    private void addCoins() {
+        PositionHolder coin = coins.get(0);
+        if (coin.y > getHeight() / N && coining) {
+            for(int i=0;i<N;i++){
+                coins.add(new PositionHolder(getWidth() / 2, i*getHeight()/N-getHeight()/N));
+            }
+            coining = false;
+        }
+        Log.d("COINS_SIZE", " : " +coins.size());
     }
 
     // Draw coin
     private void displayCoins(Canvas canvas) {
         for (int i = 0; i < coins.size(); i++) {
-            Coins c = coins.get(i);
-            if (dist(c.x,c.y,carX,carY)<100){
+            PositionHolder c = coins.get(i);
+            if (dist(c.x, c.y, carX, carY) < 100 || c.y > getHeight()) {
                 coins.remove(i);
-                Log.d("Close","TRUE COLLISION");
-            }else if(c.y > getHeight()){
-                coins.remove(i);
-                Log.d("Close","TRUE END");
+                coins.add(new PositionHolder(getWidth() / 2, 0));
             }
             c.y += speed;
-            Log.d("Coin",c.y + " \t "+carY);
         }
 
-        for(int i = 0; i < coins.size(); i++) {
-            Coins c = coins.get(i);
+        for (int i = 0; i < coins.size(); i++) {
+            PositionHolder c = coins.get(i);
             drawCoins(canvas, c.x, c.y);
         }
-    }
-
-    // add Coins
-    private void addCoins() {
-       /* Coins coin = coins.get(0);
-        if (coin.x==getHeight()/2) coins.add(new Coins(getWidth() / 2, 0));*/
     }
 
     // draw Coins
@@ -192,7 +169,7 @@ public class GameView extends View {
         coin.draw(canvas);
     }
 
-    private void drawEllipse(Canvas canvas, int x, int y,int r) {
+    private void drawEllipse(Canvas canvas, int x, int y, int r) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
@@ -201,23 +178,27 @@ public class GameView extends View {
         canvas.drawOval(circle, paint);
     }
 
-    private void drawRect(Canvas canvas, int x, int y,int w,int h) {
+    private void drawRect(Canvas canvas, int x, int y, int w, int h) {
+
         canvas.save();
-        canvas.translate(x,y);
-        canvas.rotate((float) Math.cos(Math.toRadians(degrees)));
+        canvas.translate(x, y);
+        canvas.rotate((float) Math.cos(Math.toRadians(90)));
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.RED);
-       // RectF rect = new RectF(x - w/2, y - h/2, x + w/2, y + h/2);
-        RectF rect = new RectF( - w/2, 0 - h/2, 0 + w/2, 0 + h/2);
-        canvas.drawRect(rect, paint);
-
+        // RectF rect = new RectF(x - w/2, y - h/2, x + w/2, y + h/2);
+       /* RectF rect = new RectF(-w / 2, 0 - h / 2, 0 + w / 2, 0 + h / 2);
+        canvas.drawRect(rect, paint);*/
         canvas.restore();
     }
 
-   private double dist(int x1,int y1,int x2,int y2){
-       return Math.sqrt(Math.pow((x1-x2),2)+Math.pow((y1-y2),2));
-   }
+    private double dist(int x1, int y1, int x2, int y2) {
+        return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+    }
+
+    private long map(long x, long in_min, long in_max, long out_min, long out_max) {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 }

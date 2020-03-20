@@ -78,4 +78,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, ProgressActivity.class));
         finish();
     }
+
+    public void quitGame(View view) {
+        finish();
+    }
 }

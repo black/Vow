@@ -140,51 +140,51 @@ public class GameActivity extends AppCompatActivity {
         switch (chrod){
             case "Chord A":
                 if (pitchInHz >= 110 && pitchInHz < 123.47) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
             case "Chord B":
                 if (pitchInHz >= 123.47 && pitchInHz < 130.81) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
             case "Chord C":
                 if (pitchInHz >= 130.81 && pitchInHz < 146.83) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
             case "Chord D":
                 if (pitchInHz >= 146.83 && pitchInHz < 164.81) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
             case "Chord E":
                 if (pitchInHz >= 164.81 && pitchInHz <= 174.61) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
             case "Chord F":
                 if (pitchInHz >= 174.61 && pitchInHz < 185) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
             case "Chord G":
                 if (pitchInHz >= 185 && pitchInHz < 196) {
-                    gameEvents.setMove(2);
+                    gameEvents.setMove(0);
                 }else{
-                    gameEvents.setMove(30);
+                    gameEvents.setMove(300);
                 }
                 break;
 
@@ -196,10 +196,6 @@ public class GameActivity extends AppCompatActivity {
         setVisibility(radioGroup);
     }
 
-    /* Map Function */
-    private long map(long x, long in_min, long in_max, long out_min, long out_max){
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-    }
 
     /*
      * Custom Functions
