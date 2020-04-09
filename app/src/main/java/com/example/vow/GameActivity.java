@@ -33,7 +33,7 @@ public class GameActivity extends AppCompatActivity {
     private String TAG = "GameEvents";
 
     private GameEvents gameEvents;
-    private int score = 0, coins = 0, level = 0;
+    private int score = 0, coins = 0, totalCoin =0, level = 1;
     private double pitch = 0;
     private String chrod = "Chord A";
     private RadioGroup radioGroup;
@@ -98,24 +98,27 @@ public class GameActivity extends AppCompatActivity {
         gameEvents.getScore().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer val) {
-                if (goalScore < val) {
-                    gameEvents.setLevels(level + 1);
-                }
                 scoreView.setText("SCORE " + val);
                 saveGame();
             }
         });
 
         final TextView coinView = findViewById(R.id.coin);
+        coinView.setText("COINS " + coins +"/"+goalScore);
+
         gameEvents.getCoins().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer val) {
                 assert val != null;
                 if (val > 0) {
                     coins++;
+                    if (coins!=0 && goalScore%coins==0) {
+                        gameEvents.setLevels(level++);
+                        Log.d("LEVEL", level+"");
+                    }
+                    saveGame();
                 }
                 coinView.setText("COINS " + coins +"/"+goalScore);
-                saveGame();
             }
         });
     }
@@ -228,10 +231,10 @@ public class GameActivity extends AppCompatActivity {
 
     private void gameInit() {
         chrod = sharedPreferences.getString("currentChord","Chord A");
-        level = sharedPreferences.getInt("currentLevel",0);
+        level = sharedPreferences.getInt("currentLevel",1);
         currentScore = sharedPreferences.getInt("totalScore",0);
-        coins = sharedPreferences.getInt("totalCoin",0);
-        goalScore = 20*level;
+        totalCoin = sharedPreferences.getInt("totalCoin",0);
+        goalScore = 5*level;
     }
 
     private void saveGame(){

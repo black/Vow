@@ -36,23 +36,19 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_ALL);
         }
 
-       // TextView scoreView = findViewById(R.id.scores);
         TextView levelView = findViewById(R.id.level);
-       // TextView coinView = findViewById(R.id.coins);
+        TextView coinView = findViewById(R.id.coins);
 
         SharedPreferences sharedPreferences = getSharedPreferences("VOWGAME", MODE_PRIVATE);
         mLevel = sharedPreferences.getInt("currentLevel", 0);
-     //   mScore = sharedPreferences.getInt("totalScore", 0);
-      //  mCoins = sharedPreferences.getInt("totalCoin", 0);
+        mCoins = sharedPreferences.getInt("totalCoin", 0);
 
         GameEvents gameEvents = ViewModelProviders.of(this).get(GameEvents.class);
-     //   gameEvents.setCoins(mCoins);
-      //  gameEvents.setScore(mScore);
+        gameEvents.setCoins(mCoins);
         gameEvents.setLevels(mLevel);
 
-//        coinView.setText(String.valueOf(mCoins));
-        levelView.setText(String.valueOf(mLevel));
-//        scoreView.setText(String.valueOf(mScore));
+        coinView.setText(String.valueOf("COINS "+mCoins));
+        levelView.setText(String.valueOf("LEVEL "+mLevel));
     }
 
     public void startGame(View view) {

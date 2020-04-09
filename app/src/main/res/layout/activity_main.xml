@@ -30,6 +30,17 @@
                 android:textSize="24sp"
                 android:textColor="#fff"
                 android:text="LEVEL 00"/>
+
+            <TextView
+                android:id="@+id/coins"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_bg"
+                android:gravity="center"
+                android:layout_margin="8dp"
+                android:textSize="24sp"
+                android:textColor="#fff"
+                android:text="COINS 00"/>
             <Button
                 android:layout_below="@+id/level"
                 android:id="@+id/showGameProgress"

@@ -40,7 +40,7 @@
         android:textSize="24sp"
         android:textColor="#fff"
         android:fontFamily="@font/customfont"
-        android:text="Coins"/>
+        android:text="COINS"/>
     <TextView
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
