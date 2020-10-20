@@ -1,18 +1,16 @@
 package com.example.vow;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.AnimationDrawable;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.vow.DataModel.GameEvents;
-import com.example.vow.GameViews.GameView;
 import com.example.vow.Progress.ProgressView;
 
 public class ProgressActivity extends AppCompatActivity {
